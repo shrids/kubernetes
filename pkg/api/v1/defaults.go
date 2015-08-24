@@ -85,6 +85,9 @@ func addDefaultingFuncs() {
 			if obj.TerminationMessagePath == "" {
 				obj.TerminationMessagePath = TerminationMessagePathDefault
 			}
+			if obj.DiskDevice == "" {
+				obj.DiskDevice = "defaultDiskDevice"
+			}
 		},
 		func(obj *ServiceSpec) {
 			if obj.SessionAffinity == "" {

@@ -673,7 +673,10 @@ func (dm *DockerManager) runContainer(
 			binds = append(binds, b)
 		}
 	}
-
+	glog.Info("******container: %v", container)
+	glog.Info("******pod: ", pod)
+	glog.Info("******container.Name: ", container.Name)
+	glog.Info("******diskDevice: ", container.DiskDevice)
 	hc := &docker.HostConfig{
 		PortBindings: portBindings,
 		Binds:        binds,
@@ -684,6 +687,18 @@ func (dm *DockerManager) runContainer(
 		MemorySwap: -1,
 		CPUShares:  cpuShares,
 	}
+
+	if container.DiskDevice != "" {
+		device := docker.Device{
+			PathOnHost:        container.DiskDevice,
+			PathInContainer:   container.DiskDevice,
+			CgroupPermissions: "rwm",
+		}
+
+		devices := []docker.Device{device}
+		hc.Devices = devices
+	}
+
 	if len(opts.DNS) > 0 {
 		hc.DNS = opts.DNS
 	}
@@ -1236,6 +1251,9 @@ func (dm *DockerManager) runContainerInPod(pod *api.Pod, container *api.Containe
 	}
 
 	opts, err := dm.generator.GenerateRunContainerOptions(pod, container)
+	glog.Info("****************: %v", opts)
+	glog.Info("*************: %v", pod)
+
 	if err != nil {
 		return "", err
 	}

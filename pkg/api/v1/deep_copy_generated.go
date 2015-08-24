@@ -229,6 +229,7 @@ func deepCopy_v1_Container(in Container, out *Container, c *conversion.Cloner) e
 	}
 	out.Stdin = in.Stdin
 	out.TTY = in.TTY
+	out.DiskDevice = in.DiskDevice
 	return nil
 }
 

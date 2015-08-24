@@ -234,6 +234,7 @@ func convert_api_Container_To_v1_Container(in *api.Container, out *Container, s 
 	}
 	out.Stdin = in.Stdin
 	out.TTY = in.TTY
+	out.DiskDevice = in.DiskDevice
 	return nil
 }
 
@@ -2649,6 +2650,7 @@ func convert_v1_Container_To_api_Container(in *Container, out *api.Container, s 
 	}
 	out.Stdin = in.Stdin
 	out.TTY = in.TTY
+	out.DiskDevice = in.DiskDevice
 	return nil
 }
 
