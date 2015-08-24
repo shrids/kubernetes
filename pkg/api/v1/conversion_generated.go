@@ -235,6 +235,16 @@ func convert_api_Container_To_v1_Container(in *api.Container, out *Container, s 
 	out.Stdin = in.Stdin
 	out.TTY = in.TTY
 	out.DiskDevice = in.DiskDevice
+	if in.Devices != nil {
+		out.Devices = make([]Device, len(in.Devices))
+		for i := range in.Devices {
+			if err := convert_api_Device_To_v1_Device(&in.Devices[i], &out.Devices[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.Devices = nil
+	}
 	return nil
 }
 
@@ -424,6 +434,15 @@ func convert_api_DeleteOptions_To_v1_DeleteOptions(in *api.DeleteOptions, out *D
 	} else {
 		out.GracePeriodSeconds = nil
 	}
+	return nil
+}
+
+func convert_api_Device_To_v1_Device(in *api.Device, out *Device, s conversion.Scope) error {
+	if defaulting, found := s.DefaultingInterface(reflect.TypeOf(*in)); found {
+		defaulting.(func(*api.Device))(in)
+	}
+	out.Name = in.Name
+	out.CgroupPermission = in.CgroupPermission
 	return nil
 }
 
@@ -2651,6 +2670,16 @@ func convert_v1_Container_To_api_Container(in *Container, out *api.Container, s 
 	out.Stdin = in.Stdin
 	out.TTY = in.TTY
 	out.DiskDevice = in.DiskDevice
+	if in.Devices != nil {
+		out.Devices = make([]api.Device, len(in.Devices))
+		for i := range in.Devices {
+			if err := convert_v1_Device_To_api_Device(&in.Devices[i], &out.Devices[i], s); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.Devices = nil
+	}
 	return nil
 }
 
@@ -2840,6 +2869,15 @@ func convert_v1_DeleteOptions_To_api_DeleteOptions(in *DeleteOptions, out *api.D
 	} else {
 		out.GracePeriodSeconds = nil
 	}
+	return nil
+}
+
+func convert_v1_Device_To_api_Device(in *Device, out *api.Device, s conversion.Scope) error {
+	if defaulting, found := s.DefaultingInterface(reflect.TypeOf(*in)); found {
+		defaulting.(func(*Device))(in)
+	}
+	out.Name = in.Name
+	out.CgroupPermission = in.CgroupPermission
 	return nil
 }
 
@@ -4879,6 +4917,7 @@ func init() {
 		convert_api_DaemonStatus_To_v1_DaemonStatus,
 		convert_api_Daemon_To_v1_Daemon,
 		convert_api_DeleteOptions_To_v1_DeleteOptions,
+		convert_api_Device_To_v1_Device,
 		convert_api_EmptyDirVolumeSource_To_v1_EmptyDirVolumeSource,
 		convert_api_EndpointAddress_To_v1_EndpointAddress,
 		convert_api_EndpointPort_To_v1_EndpointPort,
@@ -5000,6 +5039,7 @@ func init() {
 		convert_v1_DaemonStatus_To_api_DaemonStatus,
 		convert_v1_Daemon_To_api_Daemon,
 		convert_v1_DeleteOptions_To_api_DeleteOptions,
+		convert_v1_Device_To_api_Device,
 		convert_v1_EmptyDirVolumeSource_To_api_EmptyDirVolumeSource,
 		convert_v1_EndpointAddress_To_api_EndpointAddress,
 		convert_v1_EndpointPort_To_api_EndpointPort,

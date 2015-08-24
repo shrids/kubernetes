@@ -677,6 +677,7 @@ func (dm *DockerManager) runContainer(
 	glog.Info("******pod: ", pod)
 	glog.Info("******container.Name: ", container.Name)
 	glog.Info("******diskDevice: ", container.DiskDevice)
+	glog.Info("******devices: ", container.Devices)
 	hc := &docker.HostConfig{
 		PortBindings: portBindings,
 		Binds:        binds,
@@ -688,14 +689,17 @@ func (dm *DockerManager) runContainer(
 		CPUShares:  cpuShares,
 	}
 
-	if container.DiskDevice != "" {
-		device := docker.Device{
-			PathOnHost:        container.DiskDevice,
-			PathInContainer:   container.DiskDevice,
-			CgroupPermissions: "rwm",
+	if container.Devices != nil && len(container.Devices) != 0 {
+		numOfDevices := len(container.Devices)
+		var devices = make([]docker.Device, numOfDevices, numOfDevices)
+		for i := range container.Devices {
+			device := docker.Device{
+				PathOnHost:        container.Devices[i].Name,
+				PathInContainer:   container.Devices[i].Name,
+				CgroupPermissions: container.Devices[i].CgroupPermission,
+			}
+			devices[i] = device
 		}
-
-		devices := []docker.Device{device}
 		hc.Devices = devices
 	}
 

@@ -12569,6 +12569,13 @@
      "diskDevice": {
       "type": "string",
       "description": "diskDevice"
+     },
+     "devices": {
+      "type": "array",
+      "items": {
+       "$ref": "v1.Device"
+      },
+      "description": "devices that need to be mounted to a container"
      }
     }
    },
@@ -12843,6 +12850,23 @@
      "level": {
       "type": "string",
       "description": "the level label to apply to the container; see http://releases.k8s.io/HEAD/docs/user-guide/labels.md"
+     }
+    }
+   },
+   "v1.Device": {
+    "id": "v1.Device",
+    "required": [
+     "name",
+     "cgroupPermission"
+    ],
+    "properties": {
+     "name": {
+      "type": "string",
+      "description": "deviceName"
+     },
+     "cgroupPermission": {
+      "type": "string",
+      "description": "Permission rw, rwm, r . Default read"
      }
     }
    },

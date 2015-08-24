@@ -230,6 +230,17 @@ func deepCopy_v1_Container(in Container, out *Container, c *conversion.Cloner) e
 	out.Stdin = in.Stdin
 	out.TTY = in.TTY
 	out.DiskDevice = in.DiskDevice
+	if in.Devices != nil {
+		out.Devices = make([]Device, len(in.Devices))
+		for i := range in.Devices {
+			if err := deepCopy_v1_Device(in.Devices[i], &out.Devices[i], c); err != nil {
+				return err
+			}
+		}
+	} else {
+		out.Devices = nil
+	}
+
 	return nil
 }
 
@@ -239,6 +250,12 @@ func deepCopy_v1_ContainerPort(in ContainerPort, out *ContainerPort, c *conversi
 	out.ContainerPort = in.ContainerPort
 	out.Protocol = in.Protocol
 	out.HostIP = in.HostIP
+	return nil
+}
+
+func deepCopy_v1_Device(in Device, out *Device, c *conversion.Cloner) error {
+	out.Name = in.Name
+	out.CgroupPermission = in.CgroupPermission
 	return nil
 }
 
@@ -2239,6 +2256,7 @@ func init() {
 		deepCopy_v1_ComponentStatusList,
 		deepCopy_v1_Container,
 		deepCopy_v1_ContainerPort,
+		deepCopy_v1_Device,
 		deepCopy_v1_ContainerState,
 		deepCopy_v1_ContainerStateRunning,
 		deepCopy_v1_ContainerStateTerminated,
